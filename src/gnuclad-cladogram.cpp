@@ -132,50 +132,9 @@ Cladogram::~Cladogram() {
     if(includePNG[i] != NULL) delete includePNG[i];
 }
 
-
-void Cladogram::parseOptions(const string filename) {
-
-  ifstream fp(filename.c_str());
-
-  string bla = "";
-  if(filename != "") bla = "(" + filename + ") found";
-  else bla = "specified";
-
-  if( !(fp.is_open()) ) {
-    cerr << "\nNo config file " << bla << ". Using default options.";
-    return;
-  }
-
-  string line, opt, val;
-  int p = 0;
-
-  while( !fp.eof() && fp.good() ) {
-
-    getline(fp, line);
-
-    if(line == "" || line[0] == '#')
-      continue;
-
-    p = line.find("=");
-    opt = line.substr(0, p);
-    val = line.substr(p + 1, line.size());
-
-    // strip trailing and leading whitespaces, and then quotes
-    if(opt.size() > 0) {
-      while(opt[0] == ' ') opt = opt.substr(1);
-      while(opt[opt.size()-1] == ' ') opt = opt.substr(0, opt.size()-1);
-    }
-    if(val.size() > 0) {
-      while(val[0] == ' ') val = val.substr(1);
-      while(val[val.size()-1] == ' ') val = val.substr(0, val.size()-1);
-      while(val[0] == '"' || val[0] == '\'') val = val.substr(1);
-      while(val[val.size()-1] == '"' || val[val.size()-1] == '\'')
-        val = val.substr(0, val.size()-1);
-    }
-
-    // assign options
+void Cladogram::setOption(const string opt, const string val)
+{
     try {
-
       if     (opt == "infoBoxTitle") infoBoxTitle = val;
       else if(opt == "infoBoxTitleSize") infoBoxTitleSize = str2int(val);
       else if(opt == "infoBoxText") infoBoxText.push_back(val);
@@ -246,6 +205,50 @@ void Cladogram::parseOptions(const string filename) {
     } catch (...) {
       throw "invalid config setting for option: " + opt;
     }
+}
+
+void Cladogram::parseOptions(const string filename) {
+
+  ifstream fp(filename.c_str());
+
+  string bla = "";
+  if(filename != "") bla = "(" + filename + ") found";
+  else bla = "specified";
+
+  if( !(fp.is_open()) ) {
+    cerr << "\nNo config file " << bla << ". Using default options.";
+    return;
+  }
+
+  string line, opt, val;
+  int p = 0;
+
+  while( !fp.eof() && fp.good() ) {
+
+    getline(fp, line);
+
+    if(line == "" || line[0] == '#')
+      continue;
+
+    p = line.find("=");
+    opt = line.substr(0, p);
+    val = line.substr(p + 1, line.size());
+
+    // strip trailing and leading whitespaces, and then quotes
+    if(opt.size() > 0) {
+      while(opt[0] == ' ') opt = opt.substr(1);
+      while(opt[opt.size()-1] == ' ') opt = opt.substr(0, opt.size()-1);
+    }
+    if(val.size() > 0) {
+      while(val[0] == ' ') val = val.substr(1);
+      while(val[val.size()-1] == ' ') val = val.substr(0, val.size()-1);
+      while(val[0] == '"' || val[0] == '\'') val = val.substr(1);
+      while(val[val.size()-1] == '"' || val[val.size()-1] == '\'')
+        val = val.substr(0, val.size()-1);
+    }
+
+    // assign options
+    this->setOption(opt, val);
 
     if(debug > 0) cerr << "\nDEBUG " << opt << " = " << val;
 

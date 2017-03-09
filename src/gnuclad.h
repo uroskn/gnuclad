@@ -296,6 +296,7 @@ class Cladogram {
   Cladogram();
   ~Cladogram();
 
+  void setOption(const std::string opt, const std::string val);
   void parseOptions(const std::string filename);
   void compute();
 
