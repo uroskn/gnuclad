@@ -132,11 +132,11 @@ int main(int argc, char ** argv) {
   // The heavy lifting
   try {
 
-    clad->parseOptions(conffile);
-
     InputFile in(source);
     parser->parseData(clad, in);
     safeClose(in.p);  // if we want to write to the same file
+    
+    clad->parseOptions(conffile);
 
     clad->compute();
 

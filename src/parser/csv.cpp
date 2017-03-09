@@ -35,6 +35,7 @@ void ParserCSV::parseData(Cladogram * clad, InputFile & in) {
   int fixedFieldsConnector = 7;
   int fixedFieldsDomain = 4;
   int fixedFieldsImage = 4;
+  int fixedFieldsConfig = 2;
 
   while( !f.eof() && f.good() ) {
 
@@ -61,6 +62,7 @@ void ParserCSV::parseData(Cladogram * clad, InputFile & in) {
     if     (ctl == "N") what = "node ";
     else if(ctl == "C") what = "connector at ";
     else if(ctl == "D") what = "domain of ";
+    else if(ctl == "CFG") what = "configuration option ";
     else if(ctl == "SVG") what = "SVG include ";
     else                what = ctl;
 
@@ -121,6 +123,9 @@ void ParserCSV::parseData(Cladogram * clad, InputFile & in) {
         image->x = str2int(entry[2]);
         image->y = str2int(entry[3]);
 
+      } else if(ctl == "CFG") {
+        if ((int)entry.size() < fixedFieldsConfig) throw 0;
+        clad->setOption(entry[1], entry[2]);
       } else throw 0;
 
     } catch (...) {
