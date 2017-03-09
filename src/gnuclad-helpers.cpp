@@ -26,7 +26,7 @@ using namespace std;
 
 // Requires the user to press ENTER before continuing - for debugging
 void pressEnter() {
-  std::cout << "\nPress ENTER to continue...\n";
+  std::cerr << "\nPress ENTER to continue...\n";
   cin.clear();
   cin.sync();
   std::cin.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
@@ -158,7 +158,7 @@ double str2double(const std::string str) {
   double d;
   ss >> d;
   if(ss.fail() == true) {
-    cout << "\nError: string to double conversion failed!";
+    cerr << "\nError: string to double conversion failed!";
     throw 0;
   }
   return d;
@@ -170,7 +170,7 @@ int str2int(const std::string str) {
   int n;
   ss >> n;
   if(ss.fail() == true) {
-    cout << "\nError: string to int conversion failed!";
+    cerr << "\nError: string to int conversion failed!";
     throw 0;
   }
   return n;
@@ -181,7 +181,7 @@ std::string int2str(const int n) {
   std::ostringstream ss;
   ss << n;
   if(ss.fail() == true) {
-    cout << "\nError: int to string conversion failed!";
+    cerr << "\nError: int to string conversion failed!";
     throw 0;
   }
   return ss.str();
@@ -274,7 +274,7 @@ Date rOf(Date d, int monthsInYear, int daysInMonth) {
 std::string checkHexCol(const std::string color) {
   if(color[0] != '#' ||
     (color != "none" && color.size() != 4 && color.size() != 7 )) {
-      cout << "\nError: Color is expected to have either "
+      cerr << "\nError: Color is expected to have either "
            << "the format #abc or #abcdef"
            << "\n       none is also valid";
       throw 0;
@@ -292,7 +292,7 @@ std::string rgb2hexHue(int hue) {
   if(hhue.size() == 1) hhue = "0" + hhue;
 
   if(ss.fail() == true) {
-    cout << "\nError: Color RGB to hex conversion failed: bad hue!";
+    cerr << "\nError: Color RGB to hex conversion failed: bad hue!";
     throw 0;
   }
   return hhue;
@@ -306,7 +306,7 @@ int hex2rgbHue(std::string hhue) {
   ss << std::hex << hhue;
   ss >> hue;
   if(ss.fail() == true) {
-    cout << "\nError: Color hex to RGB conversion failed: bad hue!";
+    cerr << "\nError: Color hex to RGB conversion failed: bad hue!";
     throw 0;
   }
   return hue;

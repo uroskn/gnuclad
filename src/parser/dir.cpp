@@ -38,7 +38,7 @@ void ParserDIR::parseData(Cladogram * clad, InputFile & in) {
   clad->treeSpacingBiggerThan = 0;
 
   if(clad->derivType != 1 && clad->derivType != 5)
-    cout << "\nWARNING: derivType 1 or 5 recommended";
+    cerr << "\nWARNING: derivType 1 or 5 recommended";
   clad->stopFadeOutPX = 0;
   clad->rulerMonthWidth = 0;
 
@@ -129,7 +129,7 @@ bool readableDir(string dname) {
   struct stat filestat;
 
   if (stat(dname.c_str(), &filestat) == -1) {
-    cout << "\n" << dname;
+    cerr << "\n" << dname;
     perror("stat");
   }
   if(!S_ISDIR(filestat.st_mode))

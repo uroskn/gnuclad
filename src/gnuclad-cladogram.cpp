@@ -142,7 +142,7 @@ void Cladogram::parseOptions(const string filename) {
   else bla = "specified";
 
   if( !(fp.is_open()) ) {
-    cout << "\nNo config file " << bla << ". Using default options.";
+    cerr << "\nNo config file " << bla << ". Using default options.";
     return;
   }
 
@@ -241,13 +241,13 @@ void Cladogram::parseOptions(const string filename) {
       else if(opt == "dir_domainSize") dir_domainSize = str2int(val);
       else if(opt == "dir_domainIntensity") dir_domainIntensity = str2int(val);
       else if(opt == "debug") debug = str2int(val);
-      else cout << "\nIGNORING unrecognised config option: " << opt;
+      else cerr << "\nIGNORING unrecognised config option: " << opt;
 
     } catch (...) {
       throw "invalid config setting for option: " + opt;
     }
 
-    if(debug > 0) cout << "\nDEBUG " << opt << " = " << val;
+    if(debug > 0) cerr << "\nDEBUG " << opt << " = " << val;
 
   }
 
@@ -288,7 +288,7 @@ void Cladogram::compute() {
   int dCount = (int)domains.size();
   int cCount = (int)connectors.size();
 
-  cout << "\nComputing cladogram for " << nCount << " nodes, "
+  cerr << "\nComputing cladogram for " << nCount << " nodes, "
                                        << cCount << " connectors and "
                                        << dCount << " domains...";
 
@@ -318,7 +318,7 @@ void Cladogram::compute() {
 
     // If "start" is newer than endOfTime, ignore that node
     if(endOfTime < n->start) {
-      cout << "\nIgnoring " << n->name
+      cerr << "\nIgnoring " << n->name
            << " : starts after specified End Of Time";
 
       nodes.erase(nodes.begin() + i);
@@ -365,7 +365,7 @@ void Cladogram::compute() {
     for(int j = 0; j < nCount; ++j) {
 
       if(j > i && n->name == nodes[j]->name)  // might result in bad children
-        cout << "\nWarning: " << n->name
+        cerr << "\nWarning: " << n->name
              << " (entry " << j+1 << ") is already listed at position " << i+1;
 
       if(parName == nodes[j]->name)
@@ -382,7 +382,7 @@ void Cladogram::compute() {
         throw n->name + " starts before it's parent " + n->parent->name;
 
       if(n->parent->stop < n->start && inVitro == false)
-        cout << "\nWarning: " << n->name
+        cerr << "\nWarning: " << n->name
              << " starts AFTER it's parent (" << n->parent->name << ") stops!";
 
       n->parent->children.push_back(n);
@@ -419,7 +419,7 @@ void Cladogram::compute() {
         d->node = nodes[j];
 
     if(d->node == NULL || endOfTime < d->node->start) {
-      cout << "\nWarning: unable to assign domain to " + d->nodeName;
+      cerr << "\nWarning: unable to assign domain to " + d->nodeName;
       domains.erase(domains.begin() + i);
       --dCount;
       --i;
@@ -438,7 +438,7 @@ void Cladogram::compute() {
     if(c->toWhen.day == 0) c->toWhen.day = 1;
 
     if(endOfTime < c->fromWhen || endOfTime < c->toWhen) {
-      cout << "\nIGNORING connector " << c->fromName << " -> " << c->toName
+      cerr << "\nIGNORING connector " << c->fromName << " -> " << c->toName
            << " (starting " << c->fromWhen.year<< "." << c->fromWhen.month
            << "." << c->fromWhen.day << " stopping " << c->toWhen.year << "."
            << c->toWhen.month << "." << c->toWhen.day
@@ -457,7 +457,7 @@ void Cladogram::compute() {
     }
 
     if(c->from == NULL || c->to == NULL) {
-      cout << "\nWarning: unable to assign connector "
+      cerr << "\nWarning: unable to assign connector "
            << c->fromName << " -> " << c->toName;
       connectors.erase(connectors.begin() + i);
       --cCount;
@@ -646,7 +646,7 @@ void Cladogram::compute() {
     d = domains[i];
 
     if(d->node->size < treeSpacingBiggerThan)
-      cout << "\nWARNING: domain of node " << d->node->name << " will not get"
+      cerr << "\nWARNING: domain of node " << d->node->name << " will not get"
            << " spaced and may overlap with other lines (it's tree is"
            << " too small). Reduce the treeSpacingBiggerThan config option.";
 
@@ -696,27 +696,27 @@ void Cladogram::debug_cladogram_compute() {
   for(int i = 0; i < (int)nodes.size(); ++i) {
     Node * n = nodes[i];
     string rt = (n->parent == NULL)?(" *"):("");
-    cout << "\nDEBUG\t" << n->name << rt
+    cerr << "\nDEBUG\t" << n->name << rt
          << "    \t  \tsize: " << n->size << "    \toffset: " << n->offset;
   }
-  cout << "\n";
+  cerr << "\n";
   for(int i = 0; i < (int)connectors.size(); ++i) {
     Connector * c = connectors[i];
-    cout << "\nDEBUG\t" << c->fromName << "  \t=>\t" << c->toName
+    cerr << "\nDEBUG\t" << c->fromName << "  \t=>\t" << c->toName
          << "   \t(" << c->offsetA << ","<< c->offsetB << ")";
   }
-  cout << "\n";
+  cerr << "\n";
   for(int i = 0; i < (int)domains.size(); ++i) {
     Domain * d = domains[i];
-    cout << "\nDEBUG\t domain " << d->nodeName
+    cerr << "\nDEBUG\t domain " << d->nodeName
          << "    \t(" << d->offsetA << "," << d->offsetB << ")";
   }
-  cout << "\n\nDEBUG\tFrom "
+  cerr << "\n\nDEBUG\tFrom "
        << beginningOfTime.year << "." << beginningOfTime.month << "."
        << beginningOfTime.day << " to "
        << endOfTime.year << "." << endOfTime.month << "." << endOfTime.day
        << "\ttotal size: " << maximumOffset + 1 << "\n";
-  cout.flush();
+  cerr.flush();
 
 }
 
@@ -989,6 +989,6 @@ void Cladogram::nodesPreorder() {
 
   }
   if(debug > 0)
-    cout << "\nnodesPreorder: comparisons=" << dbg_counter
+    cerr << "\nnodesPreorder: comparisons=" << dbg_counter
          << "  swaps=" << dbg_swaps;
 }

@@ -53,12 +53,12 @@ int main(int argc, char ** argv) {
   string outFormats = "csv, svg, conf";
 
   // Print version
-  cout << "gnuclad " << version;
+  cerr << "gnuclad " << version;
 
   string a1;
   if(argc > 1) a1 = argv[1];
   if(a1 == "-v" || a1 == "--version") {
-    cout << "\n";
+    cerr << "\n";
     return EXIT_SUCCESS;
   }
 
@@ -66,7 +66,7 @@ int main(int argc, char ** argv) {
   string self = getBaseName(argv[0]);
   if( (argc != 3 && argc != 4) || a1 == "-h" || a1 == "--help" ) {
 
-    cout << "\nUsage: " << self<<" INPUTFILE OUTPUT[FORMAT|FILE] [CONFIGFILE]\n"
+    cerr << "\nUsage: " << self<<" INPUTFILE OUTPUT[FORMAT|FILE] [CONFIGFILE]\n"
          << " Example: " << self << " table.CSV SVG\n"
          << " Example: " << self << " Data.csv result.csv alternative.conf\n\n"
          << "Supported input formats: " << inFormats << '\n'
@@ -95,7 +95,7 @@ int main(int argc, char ** argv) {
   if     (inputExt == "csv") parser = new ParserCSV;
   else if(inputExt == "")    parser = new ParserDIR;
   else {
-    cout << "\nError: unknown input file type: " << inputExt << '\n'
+    cerr << "\nError: unknown input file type: " << inputExt << '\n'
          << "Supported input formats: " << inFormats << '\n';
     exit(EXIT_FAILURE);
   }
@@ -107,7 +107,7 @@ int main(int argc, char ** argv) {
   else if(outputExt == "conf") generator = new GeneratorCONF;
   else if(outputExt == "png")  generator = new GeneratorPNG;
   else {
-    cout << "\nError: unknown output file type: " << outputExt << '\n'
+    cerr << "\nError: unknown output file type: " << outputExt << '\n'
          << "Supported output formats: " << outFormats << '\n';
     delete parser;
     exit(EXIT_FAILURE);
@@ -120,7 +120,7 @@ int main(int argc, char ** argv) {
   clad->inputFolder = getBaseFolder(source);
 
   int exitval = EXIT_FAILURE;
-  cout << ": " << source << " => " << dest;
+  cerr << ": " << source << " => " << dest;
 
   // The heavy lifting
   try {
@@ -139,13 +139,13 @@ int main(int argc, char ** argv) {
     exitval = EXIT_SUCCESS;
 
   } catch(const char * err) {
-    cout << "\nError: " << err;
+    cerr << "\nError: " << err;
   } catch(string err) {
-    cout << "\nError: " << err;
+    cerr << "\nError: " << err;
   } catch(exception e) {
-    cout << "\nError: " << e.what();
+    cerr << "\nError: " << e.what();
   } catch(...) {
-    cout << "\nError: unknown reason";
+    cerr << "\nError: unknown reason";
   }
 
   // Cleaning up
@@ -156,9 +156,9 @@ int main(int argc, char ** argv) {
   if(exitval == EXIT_FAILURE) {
 
     if(inputExt != outputExt) remove(dest.c_str());
-    cout << "\nAborted\n";
+    cerr << "\nAborted\n";
 
-  } else cout << "\nDone\n";
+  } else cerr << "\nDone\n";
 
   return exitval;
 }
@@ -179,7 +179,7 @@ Color::Color(int tred, int tgreen, int tblue) {
 
   if(red > 255 || green > 255 || blue > 255 ||
      red < 0   || green < 0   || blue < 0) {
-    cout << "\nError: Color RGB to hex conversion failed!";
+    cerr << "\nError: Color RGB to hex conversion failed!";
     throw 0;
   }
 
@@ -202,7 +202,7 @@ Color::Color(string thex) {
 
   if(red > 255 || green > 255 || blue > 255 ||
      red < 0   || green < 0   || blue < 0) {
-    cout << "\nError: Color RGB to hex conversion failed!";
+    cerr << "\nError: Color RGB to hex conversion failed!";
     throw 0;
   }
 }

@@ -39,7 +39,7 @@ GeneratorPNG::~GeneratorPNG() {}
 
 void GeneratorPNG::writeData(Cladogram * clad, OutputFile & out) {
 
-  cout << "\nTrying to generate PNG...\n"
+  cerr << "\nTrying to generate PNG...\n"
        << "\nSorry, I really tried. Maybe you could generate a SVG and convert"
        << " it with a tool like Inkscape:"
        << "\ninkscape XXX.svg -D --export-png=YYY.png\n";
