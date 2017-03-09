@@ -71,6 +71,8 @@ int main(int argc, char ** argv) {
          << " Example: " << self << " Data.csv result.csv alternative.conf\n\n"
          << "Supported input formats: " << inFormats << '\n'
          << "Supported output formats: " << outFormats << "\n"
+         << "Providing - for INPUTFILE will expect input in CSV on STDIN (Linux/BSD/OSX only)\n"
+         << "Providing - for OUTPUTFILE will output svg to STDOUT (Linux/BSD/OSX only)\n"
          << "Please consult the Texinfo manual for in-depth explanations.\n\n";
     return EXIT_SUCCESS;
 
@@ -79,6 +81,7 @@ int main(int argc, char ** argv) {
   // Get input/output file information
   string source = a1;
   string dest = argv[2];
+  string rdest = argv[2];
   string filename = getBaseName(source);
   string inputExt = getExt(source);  // lowercase extension
   string outputExt = getExt(dest);  // lowercase extension
@@ -92,8 +95,8 @@ int main(int argc, char ** argv) {
 
   // Chose parser
   Parser * parser = NULL;
-  if     (inputExt == "csv") parser = new ParserCSV;
-  else if(inputExt == "")    parser = new ParserDIR;
+  if     ((inputExt == "csv") || (source == "-")) parser = new ParserCSV;
+  else if(inputExt == "")                         parser = new ParserDIR;
   else {
     cerr << "\nError: unknown input file type: " << inputExt << '\n'
          << "Supported input formats: " << inFormats << '\n';
@@ -106,6 +109,10 @@ int main(int argc, char ** argv) {
   else if(outputExt == "svg")  generator = new GeneratorSVG;
   else if(outputExt == "conf") generator = new GeneratorCONF;
   else if(outputExt == "png")  generator = new GeneratorPNG;
+  else if(rdest     == "-") {
+      dest = "/dev/stdout";
+      generator = new GeneratorSVG;
+  }
   else {
     cerr << "\nError: unknown output file type: " << outputExt << '\n'
          << "Supported output formats: " << outFormats << '\n';
@@ -305,8 +312,10 @@ Connector::Connector() {
 
 InputFile::InputFile(std::string tname) {
   name = tname;
-  if(getExt(name) != "")
+  if((getExt(name) != "") || (name == "-")) {
+    if (name == "-") name = "/dev/stdin";
     p = new_infile(name);
+  }
   else p = NULL;
 }
 InputFile::~InputFile() {
